@@ -30,7 +30,7 @@ object Q1 {
       .select('id, 'point)
       .where(within('point, areaOfInterest()))
 
-    q1.toDataStream[(Int, Point, Timestamp)]
+    q1.toDataStream[(Int, Point)]
       .print()
 
     env.execute("stFlink operations - Table API: Q1")
