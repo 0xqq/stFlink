@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{GeoLifeTuple, TumblingWindow, minDistance, pointOfInterest}
+import hr.fer.stflink.core.common.{sttuple, TumblingWindow, minDistance, pointOfInterest}
 import hr.fer.stflink.core.data_types.stFlink
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -22,14 +22,14 @@ object Q3 {
     val tEnv = TableEnvironment.getTableEnvironment(env)
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val stream = env.socketTextStream("localhost", 9999)
-    val geoLifeStream: DataStream[GeoLifeTuple] = stream.map{ tuple => GeoLifeTuple(tuple) }
-      .assignAscendingTimestamps( geoLifeTuple => geoLifeTuple.timestamp.getTime )
+    val rawstream = env.socketTextStream("localhost", 9999)
+    val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
+      .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    val ststream = stFlink
-      .tPoint(geoLifeStream, TumblingWindow(Time.minutes(30)))
+    val temporalstream = stFlink
+      .tPoint(ststream, TumblingWindow(Time.minutes(30)))
 
-    tEnv.registerDataStream("TemporalPoints", ststream, 'id, 'tempPoint)
+    tEnv.registerDataStream("TemporalPoints", temporalstream, 'id, 'tempPoint)
     tEnv.registerFunction("minDistance", minDistance)
     tEnv.registerFunction("pointOfInterest", pointOfInterest)
 

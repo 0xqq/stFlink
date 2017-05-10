@@ -2,7 +2,7 @@ package hr.fer.stflink.queries.streaming_api
 
 import java.util.concurrent.TimeUnit
 
-import hr.fer.stflink.core.common.GeoLifeTuple
+import hr.fer.stflink.core.common.sttuple
 import hr.fer.stflink.core.data_types.temporal
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -21,11 +21,11 @@ object Q4 {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val stream = env.socketTextStream("localhost", 9999)
-    val geoLifeStream: DataStream[GeoLifeTuple] = stream.map{ tuple => GeoLifeTuple(tuple) }
+    val rawstream = env.socketTextStream("localhost", 9999)
+    val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
 
-    val q4 = geoLifeStream
-      .assignAscendingTimestamps(geoLifeTuple => geoLifeTuple.timestamp.getTime )
+    val q4 = ststream
+      .assignAscendingTimestamps(tuple => tuple.timestamp.getTime )
       .keyBy(0)
       .timeWindow(Time.of(60, TimeUnit.MINUTES))
       .apply { temporal.temporalPoint _ }

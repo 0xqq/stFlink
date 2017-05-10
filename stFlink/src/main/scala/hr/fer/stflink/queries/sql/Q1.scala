@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{GeoLifeTuple, areaOfInterest, within}
+import hr.fer.stflink.core.common.{sttuple, areaOfInterest, within}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.TableEnvironment
@@ -20,11 +20,11 @@ object Q1 {
     val tEnv = TableEnvironment.getTableEnvironment(env)
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val stream = env.socketTextStream("localhost", 9999)
-    val geoLifeStream: DataStream[GeoLifeTuple] = stream.map{ tuple => GeoLifeTuple(tuple) }
-      .assignAscendingTimestamps( geoLifeTuple => geoLifeTuple.timestamp.getTime )
+    val rawstream = env.socketTextStream("localhost", 9999)
+    val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
+      .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    tEnv.registerDataStream("Points", geoLifeStream, 'id, 'position, 'timestamp)
+    tEnv.registerDataStream("Points", ststream, 'id, 'position, 'timestamp)
     tEnv.registerFunction("within", within)
     tEnv.registerFunction("areaOfInterest", areaOfInterest)
 

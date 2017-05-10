@@ -2,7 +2,7 @@ package hr.fer.stflink.queries.sql
 
 import java.sql.Timestamp
 
-import hr.fer.stflink.core.common.{GeoLifeTuple, SlidingWindow, endTime, lengthAtTime}
+import hr.fer.stflink.core.common.{sttuple, SlidingWindow, endTime, lengthAtTime}
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -24,14 +24,14 @@ object Q2 {
     val tEnv = TableEnvironment.getTableEnvironment(env)
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val stream = env.socketTextStream("localhost", 9999)
-    val geoLifeStream: DataStream[GeoLifeTuple] = stream.map{ tuple => GeoLifeTuple(tuple) }
-      .assignAscendingTimestamps( geoLifeTuple => geoLifeTuple.timestamp.getTime )
+    val rawstream = env.socketTextStream("localhost", 9999)
+    val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
+      .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    val ststream = stFlink
-      .tPoint(geoLifeStream, SlidingWindow(Time.minutes(10), Time.minutes(1)))
+    val temporalstream = stFlink
+      .tPoint(ststream, SlidingWindow(Time.minutes(10), Time.minutes(1)))
 
-    tEnv.registerDataStream("TemporalPoints", ststream, 'id, 'tempPoint)
+    tEnv.registerDataStream("TemporalPoints", temporalstream, 'id, 'tempPoint)
     tEnv.registerFunction("endTime", endTime)
     tEnv.registerFunction("lengthAtTime", lengthAtTime)
 

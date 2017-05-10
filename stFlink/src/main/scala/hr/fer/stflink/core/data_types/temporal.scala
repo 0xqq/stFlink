@@ -1,6 +1,6 @@
 package hr.fer.stflink.core.data_types
 
-import hr.fer.stflink.core.common.GeoLifeTuple
+import hr.fer.stflink.core.common.sttuple
 import org.apache.flink.api.java.tuple.Tuple
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
@@ -10,7 +10,7 @@ import scala.collection.mutable.Buffer
 
 object temporal {
 
-	def point(cell: Tuple, window: TimeWindow, events: Iterable[GeoLifeTuple],
+	def point(cell: Tuple, window: TimeWindow, events: Iterable[sttuple],
 			out: Collector[ (Int, Point) ]) = {
 	  	var driverId = -1
 		var point: Point = null
@@ -23,8 +23,8 @@ object temporal {
 		out.collect( driverId, point )
   }
 
-  def temporalPoint(cell: Tuple, window: TimeWindow, events: Iterable[GeoLifeTuple],
-			out: Collector[ sttuple ]) = {
+  def temporalPoint(cell: Tuple, window: TimeWindow, events: Iterable[sttuple],
+			out: Collector[ temporaltuple ]) = {
 	  	var i: Int = 0
 	    var g: Geometry = null	    
 	    var intimeObject1: IntimeObject = null
@@ -43,7 +43,7 @@ object temporal {
         	tempPoint.addUnit(upoint)
         	intimeObject1 = intimeObject2
 		})
-		out.collect( new sttuple(driverId, tempPoint) )
+		out.collect( new temporaltuple(driverId, tempPoint) )
   }
 
   def createUpoint(intime1: IntimeObject, intime2: IntimeObject): PointUnit = {

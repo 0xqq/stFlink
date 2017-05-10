@@ -23,12 +23,12 @@ object Q5 {
     val tEnv = TableEnvironment.getTableEnvironment(env)
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val stream = env.socketTextStream("localhost", 9999)
-    val geoLifeStream: DataStream[GeoLifeTuple] = stream.map{ tuple => GeoLifeTuple(tuple) }
-      .assignAscendingTimestamps(geoLifeTuple => geoLifeTuple.timestamp.getTime)
+    val rawstream = env.socketTextStream("localhost", 9999)
+    val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
+      .assignAscendingTimestamps(tuple => tuple.timestamp.getTime)
 
     val q5 = stFlink
-      .tPoint(geoLifeStream, TumblingWindow(Time.minutes(5)))
+      .tPoint(ststream, TumblingWindow(Time.minutes(5)))
       .toTable(tEnv, 'id, 'tempPoint)
       .select('id, 'tempPoint, subTrajectory('tempPoint, startTime('tempPoint), endTime('tempPoint)) as 'subtrajectory)
       .where(distance('tempPoint, pointOfInterest(), endTime('tempPoint)) < 500 )
