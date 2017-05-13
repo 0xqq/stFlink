@@ -1,7 +1,7 @@
-# stFlink
-Implementing support for spatio-temporal queries over data streams using the Apache Flink Table API 
+# stFlink library
+Support for spatio-temporal queries over data streams using the Apache Flink Streaming API, Table API and SQL.
 
-# Apache Flink 1.2.0 Build Instructions
+# Apache Flink 1.2.0 build instructions
 
 Base Apache Flink version: latest stable release 1.2.0 
 [http://www.apache.org/dyn/closer.lua/flink/flink-1.2.0/flink-1.2.0-src.tgz]
@@ -38,7 +38,7 @@ We recommend using the provided Apache Flink 1.2.0 source code in this repo sinc
 
 `flink-1.2.0/flink-dist> mvn clean install -Dscala.version=2.11.6`
 
-# stFlink Library
+# stFlink Library build instructions
 
 ## Code structure
 
@@ -47,8 +47,8 @@ Source code is divided in several packages:
 * **hr.fer.stflink.core** - spatio-temporal data types, discrete model implementation
 * **hr.fer.stflink.queries** - example queries (Q1-Q5) implemented over different Apache Flink APIs
   * **hr.fer.stflink.queries.streaming_api** - implementation using Apache Flink Streaming API
-  * **hr.flink.stflink.queries.table_api** - implementation using Apache Flink Table API
-  * **hr.flink.stflink.queris.sql** - implementation using the Apache Flink SQL (under development)
+  * **hr.fer.stflink.queries.table_api** - implementation using Apache Flink Table API
+  * **hr.fer.stflink.queries.sql** - implementation using the Apache Flink SQL (under development)
 
 ## Running the examples
 
