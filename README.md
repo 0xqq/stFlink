@@ -46,13 +46,13 @@ Source code is divided in several packages:
 
 * **hr.fer.stflink.core** - spatio-temporal data types, discrete model implementation
 * **hr.fer.stflink.queries** - example queries (Q1-Q5) implemented over different Apache Flink APIs
-  * **hr.fer.stflink.queries.streaming_api** - implementation using Apache Flink Streaming API
-  * **hr.fer.stflink.queries.table_api** - implementation using Apache Flink Table API
+  * **hr.fer.stflink.queries.streaming_api** - implementation using the Apache Flink Streaming API
+  * **hr.fer.stflink.queries.table_api** - implementation using the Apache Flink Table API
   * **hr.fer.stflink.queries.sql** - implementation using the Apache Flink SQL (under development)
 
 ## Running the examples
 
-Following instructions have been tested and are proven to work well on Ubuntu 16.04 Xenial 64bit linux distribution
+Following instructions have been tested and are proven to work well on Ubuntu 16.04 Xenial 64bit linux distribution.
 
 ### 1. Update stFlink library's pom.xml file 
 
