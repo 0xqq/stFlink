@@ -56,8 +56,7 @@ Following instructions have been tested and are proven to work well on Ubuntu 16
 
 1. Update stFlink library's pom.xml file and set its mainClass property to the desired query - e.g. to run query Q1 implemented over the Table API:
 
-`
-<transformers>
+`<transformers>
 
    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 
@@ -65,8 +64,7 @@ Following instructions have been tested and are proven to work well on Ubuntu 16
 
    </transformer>
 
-</transformers>
-`
+</transformers>`
 
 2. Build the source
 
