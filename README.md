@@ -58,9 +58,13 @@ Following instructions have been tested and are proven to work well on Ubuntu 16
 
 `
 <transformers>
+
    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+
       <mainClass>hr.fer.stflink.queries.table_api.Q1</mainClass>
+
    </transformer>
+
 </transformers>
 `
 
