@@ -323,7 +323,7 @@ under the License.
 
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>hr.fer.stflink.queries.table_api.Q3</mainClass>
+									<mainClass>hr.fer.stflink.queries.table_api.Q1</mainClass>
 								</transformer>
 							</transformers>
 
