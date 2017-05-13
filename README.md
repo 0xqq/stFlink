@@ -54,31 +54,33 @@ Source code is divided in several packages:
 
 Following instructions have been tested and are proven to work well on Ubuntu 16.04 Xenial 64bit linux distribution
 
-1. Update stFlink library's pom.xml file and set its mainClass property to the desired query - e.g. to run query Q1 implemented over the Table API:
+###1. Update stFlink library's pom.xml file 
+
+Update stFlink library's pom.xml file and set its mainClass property to the desired query - e.g. to run query Q1 implemented over the Table API:
 
 ```
 <transformers>
    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-      <mainClass>hr.fer.stflink.queries.table_api.Q1</mainClass>
+      <mainClass>**hr.fer.stflink.queries.table_api.Q1**</mainClass>
    </transformer>
 </transformers>
 ```
 
-2. Build the source
+###2. Build stFlink library source
 
-Navigate to stFlink's library root folder (*<repo root>/stFlink*) and run the following command:
+Navigate to stFlink's library root folder (`<repo root>/stFlink`) and run the following command:
 
 `mvn clean package -Pbuild-jar`
 
-Resulting .jar file (*stFlink-1.0-SNAPSHOT.jar*) can be found in the *<stFlink root folder>/target* folder
+Resulting .jar file (`stFlink-1.0-SNAPSHOT.jar`) can be found in the `<stFlink root folder>/target` folder
 
-3. Run selected query over the GeoLife dataset
+###3. Run selected query over the GeoLife dataset
 
 Download the dataset (bigdata.txt) from [here](https://drive.google.com/open?id=0B5iQrw8ThlP0MjBVcHhmUUw5YTA) and store it somewhere locally.
 
 **Console 1: Run Apache Flink local instance and wait for the output**
 
-* Navigate to your Apache Flink 1.2.0 installation *bin* folder (*<apache flink 1.2.0 source folder>/build-target/bin*)
+* Navigate to your Apache Flink 1.2.0 installation *bin* folder (`<apache flink 1.2.0 source folder>/build-target/bin`)
 * Run Apache Flink 1.2.0 local instance:
 
 `./start-local.sh`
@@ -93,11 +95,11 @@ Download the dataset (bigdata.txt) from [here](https://drive.google.com/open?id=
 
 `cat bigdata.txt | (sleep 7; while true; do read buf; echo $buf; sleep 0.1; done) | nc -lk 9999'`
 
-We use delay of 7 seconds to give some time for Apache Flink to start our query.
+We use delay of 7 seconds to give some time for Apache Flink to start the query.
 
 **Console 3: Run selected query**
 
-* Navigate to Apache Flink bin folder (*<apache flink 1.2.0 source folder>/build-target/bin*) and run previously built .jar file:
+* Navigate to Apache Flink bin folder (`<apache flink 1.2.0 source folder>/build-target/bin`) and run previously built .jar file:
 
 `flink run <stFlink root folder>/target/stFlink-1.0-SNAPSHOT.jar`
 
