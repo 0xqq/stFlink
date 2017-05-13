@@ -61,7 +61,7 @@ Update stFlink library's pom.xml file and set its mainClass property to the desi
 ```
 <transformers>
    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-      <mainClass>**hr.fer.stflink.queries.table_api.Q1**</mainClass>
+      <mainClass>hr.fer.stflink.queries.table_api.Q1</mainClass>
    </transformer>
 </transformers>
 ```
