@@ -44,11 +44,11 @@ We recommend using the provided Apache Flink 1.2.0 source code in this repo sinc
 
 Source code is divided in several packages:
 
-* hr.fer.stflink.core - spatio-temporal data types, discrete model implementation
-* hr.fer.stflink.queries - example queries (Q1-Q5) implemented over different Apache Flink APIs
-  * hr.fer.stflink.queries.streaming_api - implementation using Apache Flink Streaming API
-  * hr.flink.stflink.queries.table_api - implementation using Apache Flink Table API
-  * hr.flink.stflink.queris.sql - implementation using the Apache Flink SQL (under development)
+* **hr.fer.stflink.core** - spatio-temporal data types, discrete model implementation
+* **hr.fer.stflink.queries** - example queries (Q1-Q5) implemented over different Apache Flink APIs
+  * **hr.fer.stflink.queries.streaming_api** - implementation using Apache Flink Streaming API
+  * **hr.flink.stflink.queries.table_api** - implementation using Apache Flink Table API
+  * **hr.flink.stflink.queris.sql** - implementation using the Apache Flink SQL (under development)
 
 ## Running the examples
 
@@ -56,12 +56,13 @@ Following instructions have been tested and are proven to work well on Ubuntu 16
 
 1. Update stFlink library's pom.xml file and set its mainClass property to the desired query - e.g. to run query Q1 implemented over the Table API:
 
+`
 <transformers>
    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
       <mainClass>hr.fer.stflink.queries.table_api.Q1</mainClass>
    </transformer>
 </transformers>
-
+`
 
 2. Build the source
 
@@ -73,7 +74,7 @@ Resulting .jar file (*stFlink-1.0-SNAPSHOT.jar*) can be found in the *<stFlink r
 
 3. Run selected query over the GeoLife dataset
 
-Download the dataset (bigdata.txt) from [here](https://drive.google.com/open?id=0B5iQrw8ThlP0MjBVcHhmUUw5YTA) and store it somewhere locally
+Download the dataset (bigdata.txt) from [here](https://drive.google.com/open?id=0B5iQrw8ThlP0MjBVcHhmUUw5YTA) and store it somewhere locally.
 
 **Console 1: Run Apache Flink local instance and wait for the output**
 
