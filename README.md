@@ -9,7 +9,9 @@ Base Apache Flink version: latest stable release 1.2.0
 Official documentation:
 [https://ci.apache.org/projects/flink/flink-docs-release-1.2/setup/building.html]
 
-We recommend using the provided Apache Flink 1.2.0 source code in this repo since it's proven to work well with provided stFlink library implementation
+We recommend using the provided Apache Flink 1.2.0 source code in this repo since it's proven to work well with provided stFlink library implementation.
+
+Following instructions have been tested and are proven to work well on Ubuntu 16.04 Xenial 64bit linux distribution.
 
 ## Build Apache Flink 1.2.0 for Scala 2.11
 
@@ -51,8 +53,6 @@ Source code is divided in several packages:
   * **hr.fer.stflink.queries.sql** - implementation using the Apache Flink SQL (under development)
 
 ## Running the examples
-
-Following instructions have been tested and are proven to work well on Ubuntu 16.04 Xenial 64bit linux distribution.
 
 ### 1. Update stFlink library's pom.xml file 
 
