@@ -57,16 +57,17 @@ Following instructions have been tested and are proven to work well on Ubuntu 16
 1. Update stFlink library's pom.xml file and set its mainClass property to the desired query - e.g. to run query Q1 implemented over the Table API:
 
 <transformers>
-	<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-		<mainClass>**hr.fer.stflink.queries.table_api.Q1**</mainClass>
-	</transformer>
+   <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+      <mainClass>hr.fer.stflink.queries.table_api.Q1</mainClass>
+   </transformer>
 </transformers>
+
 
 2. Build the source
 
 Navigate to stFlink's library root folder (*<repo root>/stFlink*) and run the following command:
 
-mvn clean package -Pbuild-jar
+`mvn clean package -Pbuild-jar`
 
 Resulting .jar file (*stFlink-1.0-SNAPSHOT.jar*) can be found in the *<stFlink root folder>/target* folder
 
@@ -78,22 +79,26 @@ Download the dataset (bigdata.txt) from [here](https://drive.google.com/open?id=
 
 * Navigate to your Apache Flink 1.2.0 installation *bin* folder (*<apache flink 1.2.0 source folder>/build-target/bin*)
 * Run Apache Flink 1.2.0 local instance:
-./start-local.sh
+
+`./start-local.sh`
 
 * Query output is logged in Flink's log file, so use the same console to wait for the output:
-tail -f <apache flink 1.2.0 source folder>/build-target/log/flink-<username>-jobmanager-0-ubuntu.out'
+
+`tail -f <apache flink 1.2.0 source folder>/build-target/log/flink-<username>-jobmanager-0-ubuntu.out`
 
 **Console 2: Read GeoLife dataset**
 
 * Read GeoLife dataset and redirect it's output to the local socket (127.0.0.1:9999):
-cat bigdata.txt | (sleep 7; while true; do read buf; echo $buf; sleep 0.1; done) | nc -lk 9999'
+
+`cat bigdata.txt | (sleep 7; while true; do read buf; echo $buf; sleep 0.1; done) | nc -lk 9999'`
 
 We use delay of 7 seconds to give some time for Apache Flink to start our query.
 
 **Console 3: Run selected query**
 
 * Navigate to Apache Flink bin folder (*<apache flink 1.2.0 source folder>/build-target/bin*) and run previously built .jar file:
-flink run <stFlink root folder>/target/stFlink-1.0-SNAPSHOT.jar
+
+`flink run <stFlink root folder>/target/stFlink-1.0-SNAPSHOT.jar`
 
 Query results can be vieved in real-time in Console 1.
 
