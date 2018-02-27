@@ -12,11 +12,17 @@ object Q1 {
 	  *
 	  */
   def main(args: Array[String]) {
+    if (args.length != 2) {
+      System.err.println("USAGE:\n<JAR name> <hostname> <port>")
+      return
+    }
+    val hostName = args(0)
+    val port = args(1).toInt
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val rawstream = env.socketTextStream("localhost", 9999)
+    val rawstream = env.socketTextStream(hostName, port)
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
 
     var areaOfInterest = Helpers.createAreaOfInterest
