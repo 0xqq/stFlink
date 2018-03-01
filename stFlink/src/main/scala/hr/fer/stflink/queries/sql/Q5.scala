@@ -36,18 +36,19 @@ object Q5 {
     val temporalstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(5)))
 
-    tEnv.registerDataStream("TemporalPoints", temporalstream, 'id, 'tempPoint)
-    tEnv.registerFunction("subTrajectory", subTrajectory)
+    tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
+    tEnv.registerFunction("ST_SubTrajectory", subTrajectory)
+    tEnv.registerFunction("ST_Distance", distance)
+    tEnv.registerFunction("pointOfInterest", pointOfInterest)
     tEnv.registerFunction("startTime", startTime)
     tEnv.registerFunction("endTime", endTime)
-    tEnv.registerFunction("distance", distance)
-    tEnv.registerFunction("pointOfInterest", pointOfInterest)
+
+
 
     val q5 = tEnv.sql(
-      "SELECT id, tempPoint, " +
-        "subTrajectory(tempPoint, startTime(tempPoint), endTime(tempPoint)) as subtrajectory " +
-      "FROM TemporalPoints" +
-      "WHERE distance(tempPoint, pointOfInterest(), endTime(tempPoint)) < 500"
+      "SELECT tPointId, tPointLocation, ST_SubTrajectory(tPointLocation, startTime(tPointLocation), endTime(tPointLocation)) " +
+      "FROM tPoints " +
+      "WHERE ST_Distance(tPointLocation, pointOfInterest(), endTime(tPointLocation)) < 500"
     )
 
     q5.toDataStream[(Int, TemporalPoint, LineString)]

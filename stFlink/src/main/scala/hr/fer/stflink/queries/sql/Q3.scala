@@ -35,14 +35,13 @@ object Q3 {
     val temporalstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(30)))
 
-    tEnv.registerDataStream("TemporalPoints", temporalstream, 'id, 'tempPoint)
-    tEnv.registerFunction("minDistance", minDistance)
+    tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
     tEnv.registerFunction("pointOfInterest", pointOfInterest)
+    tEnv.registerFunction("ST_MinDistance", minDistance)
 
     val q3 = tEnv.sql(
-      "SELECT id, minDistance(tempPoint, pointOfInterest()) as minimalDistance " +
-      "FROM TemporalPoints" +
-      "GROUP BY id"
+      "SELECT tPointId, ST_MinDistance(tPointLocation, pointOfInterest()) " +
+      "FROM tPoints"
     )
 
     q3.toDataStream[(Int, Double)]

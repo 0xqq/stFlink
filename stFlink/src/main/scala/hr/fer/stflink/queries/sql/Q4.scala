@@ -35,14 +35,14 @@ object Q4 {
     val temporalstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(60)))
 
-    tEnv.registerDataStream("TemporalPoints", temporalstream, 'id, 'tempPoint)
-    tEnv.registerFunction("lengthAtTime", lengthAtTime)
+    tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
+    tEnv.registerFunction("ST_LengthAtTime", lengthAtTime)
     tEnv.registerFunction("endTime", endTime)
 
     val q4 = tEnv.sql(
-      "SELECT id, tempPoint, lengthAtTime(tempPoint, endTime(tempPoint)) as distanceTraveled " +
-      "FROM TemporalPoints" +
-      "WHERE distanceTraveled > 10000"
+      "SELECT tPointId, tPointLocation, ST_LengthAtTime(tPointLocation, endTime(tPointLocation)) " +
+      "FROM tPoints " +
+      "WHERE ST_LengthAtTime(tPointLocation, endTime(tPointLocation)) > 10000"
     )
 
     q4.toDataStream[(Int, TemporalPoint, Double)]

@@ -30,14 +30,14 @@ object Q1 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    tEnv.registerDataStream("Points", ststream, 'id, 'position, 'timestamp)
-    tEnv.registerFunction("within", within)
+    tEnv.registerDataStream("Points", ststream, 'id as 'pointId, 'position as 'pointPosition, 'timestamp as 'pointTimestamp)
+    tEnv.registerFunction("ST_Within", within)
     tEnv.registerFunction("areaOfInterest", areaOfInterest)
 
     val q1 = tEnv.sql(
-      "SELECT id, position " +
+      "SELECT pointId, pointPosition " +
       "FROM Points " +
-      "WHERE within(position, areaOfInterest())"
+      "WHERE ST_Within(pointPosition, areaOfInterest()) IS TRUE"
     )
 
     q1.toDataStream[(Int, Point)]

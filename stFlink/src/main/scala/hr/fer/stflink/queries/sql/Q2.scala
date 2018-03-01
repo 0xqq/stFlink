@@ -1,7 +1,5 @@
 package hr.fer.stflink.queries.sql
 
-import java.sql.Timestamp
-
 import hr.fer.stflink.core.common.{sttuple, SlidingWindow, endTime, lengthAtTime}
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
@@ -37,18 +35,17 @@ object Q2 {
     val temporalstream = stFlink
       .tPoint(ststream, SlidingWindow(Time.minutes(10), Time.minutes(1)))
 
-    tEnv.registerDataStream("TemporalPoints", temporalstream, 'id, 'tempPoint)
+    tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
     tEnv.registerFunction("endTime", endTime)
-    tEnv.registerFunction("lengthAtTime", lengthAtTime)
+    tEnv.registerFunction("ST_LengthAtTime", lengthAtTime)
 
     val q2 = tEnv.sql(
-      "SELECT id, tempPoint " +
-      "FROM TemporalPoints " +
-      "WHERE lengthAtTime(tempPoint, endTime(tempPoint)) > 3000 " +
-      "GROUP BY id"
+      "SELECT tPointId, tPointLocation " +
+      "FROM tPoints " +
+      "WHERE ST_LengthAtTime(tPointLocation, endTime(tPointLocation)) > 3000 "
     )
 
-    q2.toDataStream[(Int, TemporalPoint, Timestamp)]
+    q2.toDataStream[(Int, TemporalPoint)]
       .map (element => element._2.atFinal().geom)
       .print
 
