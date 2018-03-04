@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{sttuple, TumblingWindow, minDistance, pointOfInterest}
+import hr.fer.stflink.core.common.{sttuple, TumblingWindow, ST_MinDistance, pointOfInterest}
 import hr.fer.stflink.core.data_types.stFlink
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -37,7 +37,7 @@ object Q3 {
 
     tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
     tEnv.registerFunction("pointOfInterest", pointOfInterest)
-    tEnv.registerFunction("ST_MinDistance", minDistance)
+    tEnv.registerFunction("ST_MinDistance", ST_MinDistance)
 
     val q3 = tEnv.sql(
       "SELECT tPointId, ST_MinDistance(tPointLocation, pointOfInterest()) " +

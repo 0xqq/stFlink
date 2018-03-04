@@ -6,43 +6,43 @@ import hr.fer.stflink.core.data_types.TemporalPoint
 import org.apache.flink.table.functions.ScalarFunction
 import org.locationtech.jts.geom._
 
-object startTime extends ScalarFunction {
+object ST_StartTime extends ScalarFunction {
   def eval(tempPoint: TemporalPoint): Timestamp = {
     tempPoint.startTime
   }
 }
 
-object endTime extends ScalarFunction {
+object ST_EndTime extends ScalarFunction {
   def eval(tempPoint: TemporalPoint): Timestamp = {
     tempPoint.endTime
   }
 }
 
-object lengthAtTime extends ScalarFunction {
+object ST_LengthAtTime extends ScalarFunction {
   def eval(tempPoint: TemporalPoint, tinstant: Timestamp): Double = {
     tempPoint.lengthAtTime(tinstant)
   }
 }
 
-object within extends ScalarFunction {
+object ST_Within extends ScalarFunction {
   def eval(sourceGeom: Point, destGeom: Geometry) : Boolean = {
     sourceGeom.within(destGeom)
   }
 }
 
-object minDistance extends ScalarFunction {
+object ST_MinDistance extends ScalarFunction {
   def eval(temporalPoint: TemporalPoint, geom : Geometry) : Double = {
     temporalPoint.minDistance(geom)
   }
 }
 
-object distance extends ScalarFunction {
+object ST_Distance extends ScalarFunction {
   def eval(sourceGeom: TemporalPoint, destGeom: Geometry, tinstance: Timestamp) : Double = {
     sourceGeom.distance(destGeom, tinstance).asInstanceOf[Double]
   }
 }
 
-object subTrajectory extends ScalarFunction {
+object ST_SubTrajectory extends ScalarFunction {
   def eval(temporalPoint: TemporalPoint, begin : Timestamp, end: Timestamp) : LineString = {
     temporalPoint.subTrajectory(begin, end)
   }

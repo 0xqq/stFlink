@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{sttuple, TumblingWindow, endTime, lengthAtTime}
+import hr.fer.stflink.core.common.{sttuple, TumblingWindow, ST_EndTime, ST_LengthAtTime}
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -36,13 +36,13 @@ object Q4 {
       .tPoint(ststream, TumblingWindow(Time.minutes(60)))
 
     tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
-    tEnv.registerFunction("ST_LengthAtTime", lengthAtTime)
-    tEnv.registerFunction("endTime", endTime)
+    tEnv.registerFunction("ST_LengthAtTime", ST_LengthAtTime)
+    tEnv.registerFunction("ST_EndTime", ST_EndTime)
 
     val q4 = tEnv.sql(
-      "SELECT tPointId, tPointLocation, ST_LengthAtTime(tPointLocation, endTime(tPointLocation)) " +
+      "SELECT tPointId, tPointLocation, ST_LengthAtTime(tPointLocation, ST_EndTime(tPointLocation)) " +
       "FROM tPoints " +
-      "WHERE ST_LengthAtTime(tPointLocation, endTime(tPointLocation)) > 10000"
+      "WHERE ST_LengthAtTime(tPointLocation, ST_EndTime(tPointLocation)) > 10000"
     )
 
     q4.toDataStream[(Int, TemporalPoint, Double)]

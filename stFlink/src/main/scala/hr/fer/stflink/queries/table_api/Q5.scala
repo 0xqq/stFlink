@@ -36,8 +36,8 @@ object Q5 {
     val q5 = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(5)))
       .toTable(tEnv, 'id, 'tempPoint)
-      .select('id, 'tempPoint, subTrajectory('tempPoint, startTime('tempPoint), endTime('tempPoint)) as 'subtrajectory)
-      .where(distance('tempPoint, pointOfInterest(), endTime('tempPoint)) < 500 )
+      .select('id, 'tempPoint, ST_SubTrajectory('tempPoint, ST_StartTime('tempPoint), ST_EndTime('tempPoint)) as 'subtrajectory)
+      .where(ST_Distance('tempPoint, pointOfInterest(), ST_EndTime('tempPoint)) < 500 )
 
     q5.toDataStream[(Int, TemporalPoint, LineString)]
       .map (element => (element._1, element._3))

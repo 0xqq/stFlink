@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.table_api
 
-import hr.fer.stflink.core.common.{sttuple, SlidingWindow, endTime, lengthAtTime}
+import hr.fer.stflink.core.common.{sttuple, SlidingWindow, ST_EndTime, ST_LengthAtTime}
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -37,7 +37,7 @@ object Q2 {
       .tPoint(ststream, SlidingWindow(Time.minutes(10), Time.minutes(1)))
       .toTable(tEnv, 'id, 'tempPoint)
       .select('id, 'tempPoint)
-      .where(lengthAtTime('tempPoint, endTime('tempPoint)) > 3000 )
+      .where(ST_LengthAtTime('tempPoint, ST_EndTime('tempPoint)) > 3000 )
 
     q2.toDataStream[(Int, TemporalPoint)]
       .map (element => element._2.atFinal().geom)

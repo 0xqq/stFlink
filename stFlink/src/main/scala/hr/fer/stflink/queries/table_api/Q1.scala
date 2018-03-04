@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.table_api
 
-import hr.fer.stflink.core.common.{sttuple, areaOfInterest, within}
+import hr.fer.stflink.core.common.{ST_Within, areaOfInterest, sttuple}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.TableEnvironment
@@ -34,7 +34,7 @@ object Q1 {
     val q1 = ststream
       .toTable(tEnv, 'id, 'point, 'timestamp)
       .select('id, 'point)
-      .where(within('point, areaOfInterest()))
+      .where(ST_Within('point, areaOfInterest()))
 
     q1.toDataStream[(Int, Point)]
       .print

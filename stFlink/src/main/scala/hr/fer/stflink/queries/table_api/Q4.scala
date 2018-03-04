@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.table_api
 
-import hr.fer.stflink.core.common.{sttuple, TumblingWindow, endTime, lengthAtTime}
+import hr.fer.stflink.core.common.{sttuple, TumblingWindow, ST_EndTime, ST_LengthAtTime}
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -35,7 +35,7 @@ object Q4 {
     val q5 = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(60)))
       .toTable(tEnv, 'id, 'tempPoint)
-      .select('id, 'tempPoint, lengthAtTime('tempPoint, endTime('tempPoint)) as 'distanceTraveled)
+      .select('id, 'tempPoint, ST_LengthAtTime('tempPoint, ST_EndTime('tempPoint)) as 'distanceTraveled)
       .where('distanceTraveled > 10000 )
 
     q5.toDataStream[(Int, TemporalPoint, Double)]

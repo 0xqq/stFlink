@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.table_api
 
-import hr.fer.stflink.core.common.{sttuple, TumblingWindow, minDistance, pointOfInterest}
+import hr.fer.stflink.core.common.{sttuple, TumblingWindow, ST_MinDistance, pointOfInterest}
 import hr.fer.stflink.core.data_types.stFlink
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -35,7 +35,7 @@ object Q3 {
     val q3 = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(30)))
       .toTable(tEnv, 'id, 'tempPoint)
-      .select('id, minDistance('tempPoint, pointOfInterest()) as 'minimalDistance)
+      .select('id, ST_MinDistance('tempPoint, pointOfInterest()) as 'minimalDistance)
 
     q3.toDataStream[(Int, Double)]
       .print

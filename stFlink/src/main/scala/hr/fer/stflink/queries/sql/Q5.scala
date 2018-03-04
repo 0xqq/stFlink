@@ -37,18 +37,18 @@ object Q5 {
       .tPoint(ststream, TumblingWindow(Time.minutes(5)))
 
     tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
-    tEnv.registerFunction("ST_SubTrajectory", subTrajectory)
-    tEnv.registerFunction("ST_Distance", distance)
+    tEnv.registerFunction("ST_SubTrajectory", ST_SubTrajectory)
+    tEnv.registerFunction("ST_Distance", ST_Distance)
     tEnv.registerFunction("pointOfInterest", pointOfInterest)
-    tEnv.registerFunction("startTime", startTime)
-    tEnv.registerFunction("endTime", endTime)
+    tEnv.registerFunction("ST_StartTime", ST_StartTime)
+    tEnv.registerFunction("ST_EndTime", ST_EndTime)
 
 
 
     val q5 = tEnv.sql(
-      "SELECT tPointId, tPointLocation, ST_SubTrajectory(tPointLocation, startTime(tPointLocation), endTime(tPointLocation)) " +
+      "SELECT tPointId, tPointLocation, ST_SubTrajectory(tPointLocation, ST_StartTime(tPointLocation), ST_EndTime(tPointLocation)) " +
       "FROM tPoints " +
-      "WHERE ST_Distance(tPointLocation, pointOfInterest(), endTime(tPointLocation)) < 500"
+      "WHERE ST_Distance(tPointLocation, pointOfInterest(), ST_EndTime(tPointLocation)) < 500"
     )
 
     q5.toDataStream[(Int, TemporalPoint, LineString)]
