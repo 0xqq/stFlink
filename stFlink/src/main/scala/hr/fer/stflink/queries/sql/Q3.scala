@@ -41,7 +41,8 @@ object Q3 {
 
     val q3 =
         tEnv.sql("""
-                    SELECT tPointId, ST_MinDistance(tPointLocation, pointOfInterest())
+                    SELECT tPointId,
+                           ST_MinDistance(tPointLocation, pointOfInterest())
                     FROM tPoints
                 """)
 
