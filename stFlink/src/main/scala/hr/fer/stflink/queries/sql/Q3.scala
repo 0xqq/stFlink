@@ -32,17 +32,18 @@ object Q3 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    val temporalstream = stFlink
+    val windowstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(30)))
 
-    tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
+    tEnv.registerDataStream("tPoints", windowstream, 'id as 'tPointId, 'location as 'tPointLocation)
     tEnv.registerFunction("pointOfInterest", pointOfInterest)
     tEnv.registerFunction("ST_MinDistance", ST_MinDistance)
 
-    val q3 = tEnv.sql(
-      "SELECT tPointId, ST_MinDistance(tPointLocation, pointOfInterest()) " +
-      "FROM tPoints"
-    )
+    val q3 =
+        tEnv.sql("""
+                    SELECT tPointId, ST_MinDistance(tPointLocation, pointOfInterest())
+                    FROM tPoints
+                """)
 
     q3.toDataStream[(Int, Double)]
       .print

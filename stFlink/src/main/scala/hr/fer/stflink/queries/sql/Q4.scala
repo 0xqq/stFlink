@@ -32,18 +32,23 @@ object Q4 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    val temporalstream = stFlink
+    val windowstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(60)))
 
-    tEnv.registerDataStream("tPoints", temporalstream, 'id as 'tPointId, 'location as 'tPointLocation)
+    tEnv.registerDataStream("tPoints", windowstream, 'id as 'tPointId, 'location as 'tPointLocation)
     tEnv.registerFunction("ST_LengthAtTime", ST_LengthAtTime)
     tEnv.registerFunction("ST_EndTime", ST_EndTime)
 
-    val q4 = tEnv.sql(
-      "SELECT tPointId, tPointLocation, ST_LengthAtTime(tPointLocation, ST_EndTime(tPointLocation)) " +
-      "FROM tPoints " +
-      "WHERE ST_LengthAtTime(tPointLocation, ST_EndTime(tPointLocation)) > 10000"
-    )
+    val q4 =
+        tEnv.sql("""
+                    SELECT tPointId, tPointLocation,
+                    ST_LengthAtTime(tPointLocation,
+                                    ST_EndTime(tPointLocation))
+                    FROM tPoints
+                    WHERE ST_LengthAtTime(tPointLocation,
+                                          ST_EndTime(tPointLocation)
+                                          ) > 10000
+                """)
 
     q4.toDataStream[(Int, TemporalPoint, Double)]
       .map (element => (element._1, element._2.atFinal().geom, element._3))

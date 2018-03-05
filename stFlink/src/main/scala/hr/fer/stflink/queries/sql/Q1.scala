@@ -34,11 +34,12 @@ object Q1 {
     tEnv.registerFunction("ST_Within", ST_Within)
     tEnv.registerFunction("areaOfInterest", areaOfInterest)
 
-    val q1 = tEnv.sql(
-      "SELECT pointId, pointPosition " +
-      "FROM Points " +
-      "WHERE ST_Within(pointPosition, areaOfInterest()) IS TRUE"
-    )
+    val q1 =
+        tEnv.sql("""
+                    SELECT pointId, pointPosition
+                    FROM Points
+                    WHERE ST_Within(pointPosition, areaOfInterest()) IS TRUE
+                """)
 
     q1.toDataStream[(Int, Point)]
       .print
