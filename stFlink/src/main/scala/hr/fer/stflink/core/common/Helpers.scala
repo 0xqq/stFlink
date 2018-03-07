@@ -1,6 +1,7 @@
 package hr.fer.stflink.core.common
 
 import hr.fer.stflink.core.data_types.temporal
+import org.apache.flink.table.api.TableEnvironment
 import org.locationtech.jts.geom._
 
 object Helpers {
@@ -35,6 +36,15 @@ object Helpers {
     pointOfInterest
   }
 
-
-
+  def registerSTFunctions(tEnv: TableEnvironment) {
+    tEnv.registerFunction("areaOfInterest", areaOfInterest)
+    tEnv.registerFunction("pointOfInterest", pointOfInterest)
+    tEnv.registerFunction("ST_Distance", ST_Distance)
+    tEnv.registerFunction("ST_EndTime", ST_EndTime)
+    tEnv.registerFunction("ST_LengthAtTime", ST_LengthAtTime)
+    tEnv.registerFunction("ST_MinDistance", ST_MinDistance)
+    tEnv.registerFunction("ST_StartTime", ST_StartTime)
+    tEnv.registerFunction("ST_SubTrajectory", ST_SubTrajectory)
+    tEnv.registerFunction("ST_Within", ST_Within)
+  }
 }

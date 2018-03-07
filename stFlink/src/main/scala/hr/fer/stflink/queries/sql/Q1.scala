@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{sttuple, areaOfInterest, ST_Within}
+import hr.fer.stflink.core.common.{Helpers, ST_Within, areaOfInterest, sttuple}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.TableEnvironment
@@ -30,10 +30,12 @@ object Q1 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
-    tEnv.registerDataStream("Points", ststream, 'id as 'pointId, 'position as 'pointPosition, 'timestamp as 'pointTimestamp)
-    tEnv.registerFunction("ST_Within", ST_Within)
-    tEnv.registerFunction("areaOfInterest", areaOfInterest)
+    Helpers.registerSTFunctions(tEnv)
 
+    tEnv.registerDataStream("Points", ststream,
+                            'id as 'pointId,
+                            'position as 'pointPosition,
+                            'timestamp as 'pointTimestamp)
     val q1 =
         tEnv.sql("""
                     SELECT pointId, pointPosition

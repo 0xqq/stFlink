@@ -122,7 +122,7 @@
                   </filters>
                   <transformers>
                     <transformer>
-                      <mainClass>hr.fer.stflink.queries.sql.Q5</mainClass>
+                      <mainClass>hr.fer.stflink.queries.sql.Q1</mainClass>
                     </transformer>
                   </transformers>
                 </configuration>

@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{sttuple, SlidingWindow, ST_EndTime, ST_LengthAtTime}
+import hr.fer.stflink.core.common._
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -32,13 +32,14 @@ object Q2 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
+    Helpers.registerSTFunctions(tEnv)
+
     val windowstream = stFlink
       .tPoint(ststream, SlidingWindow(Time.minutes(10), Time.minutes(1)))
 
-    tEnv.registerDataStream("tPoints", windowstream, 'id as 'tPointId, 'location as 'tPointLocation)
-    tEnv.registerFunction("ST_EndTime", ST_EndTime)
-    tEnv.registerFunction("ST_LengthAtTime", ST_LengthAtTime)
-
+    tEnv.registerDataStream("tPoints", windowstream,
+                            'id as 'tPointId,
+                            'location as 'tPointLocation)
     val q2 =
         tEnv.sql("""
                     SELECT tPointId, tPointLocation

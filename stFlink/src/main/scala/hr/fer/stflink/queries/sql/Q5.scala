@@ -33,18 +33,14 @@ object Q5 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
+    Helpers.registerSTFunctions(tEnv)
+
     val windowstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(5)))
 
-    tEnv.registerDataStream("tPoints", windowstream, 'id as 'tPointId, 'location as 'tPointLocation)
-    tEnv.registerFunction("ST_SubTrajectory", ST_SubTrajectory)
-    tEnv.registerFunction("ST_Distance", ST_Distance)
-    tEnv.registerFunction("pointOfInterest", pointOfInterest)
-    tEnv.registerFunction("ST_StartTime", ST_StartTime)
-    tEnv.registerFunction("ST_EndTime", ST_EndTime)
-
-
-
+    tEnv.registerDataStream("tPoints", windowstream,
+                            'id as 'tPointId,
+                            'location as 'tPointLocation)
     val q5 =
         tEnv.sql("""
                     SELECT tPointId, tPointLocation,

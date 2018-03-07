@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{sttuple, TumblingWindow, ST_EndTime, ST_LengthAtTime}
+import hr.fer.stflink.core.common._
 import hr.fer.stflink.core.data_types.{TemporalPoint, stFlink}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -12,7 +12,7 @@ object Q4 {
 
   /** Q4
     *
-    * Find all mobile objects (id, position and distance traveled) that have travelled
+    * Find all spatio-temporal objects (id, position and distance traveled) that have travelled
     * more than 10 km during last hour.
     *
     */
@@ -32,13 +32,14 @@ object Q4 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
+    Helpers.registerSTFunctions(tEnv)
+
     val windowstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(60)))
 
-    tEnv.registerDataStream("tPoints", windowstream, 'id as 'tPointId, 'location as 'tPointLocation)
-    tEnv.registerFunction("ST_LengthAtTime", ST_LengthAtTime)
-    tEnv.registerFunction("ST_EndTime", ST_EndTime)
-
+    tEnv.registerDataStream("tPoints", windowstream,
+                            'id as 'tPointId,
+                            'location as 'tPointLocation)
     val q4 =
         tEnv.sql("""
                     SELECT tPointId, tPointLocation,

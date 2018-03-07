@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{sttuple, TumblingWindow, ST_MinDistance, pointOfInterest}
+import hr.fer.stflink.core.common._
 import hr.fer.stflink.core.data_types.stFlink
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
@@ -12,7 +12,7 @@ object Q3 {
 
   /** Q3
     *
-    * For each mobile object, find its minimal distance from the point of interest
+    * For each spatio-temporal object, find its minimal distance from the point of interest
     * during the last half an hour.
     *
     */
@@ -32,17 +32,19 @@ object Q3 {
     val ststream: DataStream[sttuple] = rawstream.map{ tuple => sttuple(tuple) }
       .assignAscendingTimestamps( tuple => tuple.timestamp.getTime )
 
+    Helpers.registerSTFunctions(tEnv)
+
     val windowstream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(30)))
 
-    tEnv.registerDataStream("tPoints", windowstream, 'id as 'tPointId, 'location as 'tPointLocation)
-    tEnv.registerFunction("pointOfInterest", pointOfInterest)
-    tEnv.registerFunction("ST_MinDistance", ST_MinDistance)
-
+    tEnv.registerDataStream("tPoints", windowstream,
+                            'id as 'tPointId,
+                            'location as 'tPointLocation)
     val q3 =
         tEnv.sql("""
                     SELECT tPointId,
-                           ST_MinDistance(tPointLocation, pointOfInterest())
+                           ST_MinDistance(tPointLocation,
+                                          pointOfInterest())
                     FROM tPoints
                 """)
 
