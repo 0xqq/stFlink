@@ -35,10 +35,10 @@ object Q5 {
 
     Helpers.registerSTFunctions(tEnv)
 
-    val windowstream = stFlink
+    val windowStream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(5)))
 
-    tEnv.registerDataStream("tPoints", windowstream,
+    tEnv.registerDataStream("stRelation", windowStream,
                             'id as 'tPointId,
                             'location as 'tPointLocation)
     val q5 =
@@ -47,7 +47,7 @@ object Q5 {
                            ST_SubTrajectory(tPointLocation,
                                             ST_StartTime(tPointLocation),
                                             ST_EndTime(tPointLocation))
-                           FROM tPoints
+                           FROM stRelation
                            WHERE ST_Distance(tPointLocation, pointOfInterest(),
                                              ST_EndTime(tPointLocation)
                                              ) < 500

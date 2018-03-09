@@ -34,10 +34,10 @@ object Q4 {
 
     Helpers.registerSTFunctions(tEnv)
 
-    val windowstream = stFlink
+    val windowStream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(60)))
 
-    tEnv.registerDataStream("tPoints", windowstream,
+    tEnv.registerDataStream("stRelation", windowStream,
                             'id as 'tPointId,
                             'location as 'tPointLocation)
     val q4 =
@@ -45,7 +45,7 @@ object Q4 {
                     SELECT tPointId, tPointLocation,
                     ST_LengthAtTime(tPointLocation,
                                     ST_EndTime(tPointLocation))
-                    FROM tPoints
+                    FROM stRelation
                     WHERE ST_LengthAtTime(tPointLocation,
                                           ST_EndTime(tPointLocation)
                                           ) > 10000

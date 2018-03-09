@@ -34,16 +34,16 @@ object Q2 {
 
     Helpers.registerSTFunctions(tEnv)
 
-    val windowstream = stFlink
+    val windowStream = stFlink
       .tPoint(ststream, SlidingWindow(Time.minutes(10), Time.minutes(1)))
 
-    tEnv.registerDataStream("tPoints", windowstream,
+    tEnv.registerDataStream("stRelation", windowStream,
                             'id as 'tPointId,
                             'location as 'tPointLocation)
     val q2 =
         tEnv.sql("""
                     SELECT tPointId, tPointLocation
-                    FROM tPoints
+                    FROM stRelation
                     WHERE ST_LengthAtTime(tPointLocation,
                                           ST_EndTime(tPointLocation)
                                           ) > 3000

@@ -34,10 +34,10 @@ object Q3 {
 
     Helpers.registerSTFunctions(tEnv)
 
-    val windowstream = stFlink
+    val windowStream = stFlink
       .tPoint(ststream, TumblingWindow(Time.minutes(30)))
 
-    tEnv.registerDataStream("tPoints", windowstream,
+    tEnv.registerDataStream("stRelation", windowStream,
                             'id as 'tPointId,
                             'location as 'tPointLocation)
     val q3 =
@@ -45,7 +45,7 @@ object Q3 {
                     SELECT tPointId,
                            ST_MinDistance(tPointLocation,
                                           pointOfInterest())
-                    FROM tPoints
+                    FROM stRelation
                 """)
 
     q3.toDataStream[(Int, Double)]

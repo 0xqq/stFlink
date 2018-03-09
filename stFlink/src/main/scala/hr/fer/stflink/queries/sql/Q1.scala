@@ -1,6 +1,6 @@
 package hr.fer.stflink.queries.sql
 
-import hr.fer.stflink.core.common.{Helpers, ST_Within, areaOfInterest, sttuple}
+import hr.fer.stflink.core.common.{Helpers, sttuple}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.TableEnvironment
